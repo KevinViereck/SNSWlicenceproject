@@ -8,7 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.*
 import org.litote.kmongo.*
-import routes.LogBookRoute
+
 
 val client = KMongo.createClient()
 val database = client.getDatabase("Logbook")
@@ -30,4 +30,6 @@ fun Application.start() {
     install(ContentNegotiation) {
         json()
     }
+
+    // this is comment
 }
