@@ -18,8 +18,8 @@ data class LearnerLicence (
 
 @Serializable
 data class PracticeLogEntry(
-    val start: Long = System.currentTimeMillis(),
-    val end: Long = System.currentTimeMillis(),
+    val startTime: Long = System.currentTimeMillis(),
+    val endTime: Long = System.currentTimeMillis(),
     val instructorLed: Boolean
 
 )
