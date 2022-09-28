@@ -7,7 +7,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.*
-import model.LearnerLicence
 import org.litote.kmongo.*
 import routes.learnerLicenceRoute
 import routes.userRoute

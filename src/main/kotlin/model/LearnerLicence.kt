@@ -10,8 +10,7 @@ import java.util.*
 data class LearnerLicence (
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<LearnerLicence> = newId(),
-    @Contextual
-    val dateIssued: Date,
+    val dateIssued: Long = System.currentTimeMillis(),
     val practiceLogEntries: List<PracticeLogEntry>,
     val userId: String
 
@@ -19,10 +18,8 @@ data class LearnerLicence (
 
 @Serializable
 data class PracticeLogEntry(
-    @Contextual
-    val start: Date,
-    @Contextual
-    val end: Date,
+    val start: Long = System.currentTimeMillis(),
+    val end: Long = System.currentTimeMillis(),
     val instructorLed: Boolean
 
 )
