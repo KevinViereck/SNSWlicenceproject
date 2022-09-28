@@ -29,6 +29,12 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("org.litote.kmongo:kmongo:4.7.0")
     implementation("org.litote.kmongo:kmongo-id-serialization:4.3.0")
+    // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
+    implementation("org.mindrot:jbcrypt:0.4")
+    //https://ktor.io/docs/jwt.html#flow
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {
