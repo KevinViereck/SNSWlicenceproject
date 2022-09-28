@@ -7,8 +7,9 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.*
+import model.LearnerLicence
 import org.litote.kmongo.*
-import routes.logBookRoute
+import routes.learnerLicenceRoute
 import routes.userRoute
 
 
@@ -34,7 +35,7 @@ fun Application.start() {
     }
 
     routing{
-        logBookRoute(database)
+        learnerLicenceRoute(database)
         userRoute(database)
     }
     // We are changing comments

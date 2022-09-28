@@ -6,12 +6,12 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import model.LogBook
+import model.LearnerLicence
 import org.litote.kmongo.*
 
 
-fun Route.logBookRoute (db: MongoDatabase) {
-    val logbook = db.getCollection<LogBook>("logbook")
+fun Route.learnerLicenceRoute (db: MongoDatabase) {
+    val logbook = db.getCollection<LearnerLicence>("logbook")
 
     route("/logbook") {
         get{
@@ -29,12 +29,12 @@ fun Route.logBookRoute (db: MongoDatabase) {
             }
         }
         post{
-            val entity = call.receive<LogBook>()
+            val entity = call.receive<LearnerLicence>()
             logbook.insertOne(entity)
             call.respond(HttpStatusCode.Created, entity)
         }
         put{
-            val entity = call.receive<LogBook>()
+            val entity = call.receive<LearnerLicence>()
             val result = logbook.updateOne(entity)
             if (result.modifiedCount.toInt() == 1){
                 call.respond(HttpStatusCode.OK, entity)
