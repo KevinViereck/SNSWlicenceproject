@@ -11,7 +11,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import model.User
-import model.UserDTO
+
+import model.UserDTOLogin
 import org.litote.kmongo.*
 import org.mindrot.jbcrypt.BCrypt
 import java.util.Date
@@ -34,7 +35,7 @@ fun Route.userRoute (db: MongoDatabase) {
         post("/login"){
 
             val principal = call.principal<JWTPrincipal>()
-            val data= call.receive<UserDTO>()
+            val data= call.receive<UserDTOLogin>()
 
             val filter = "{email:/^${data.email}\$/i}"
             val newUser = user.findOneById(filter)
@@ -58,9 +59,6 @@ fun Route.userRoute (db: MongoDatabase) {
                 .sign(Algorithm.HMAC256("secret"))
 
             return@post call.respond(token)
-
-
-
 
         }
 

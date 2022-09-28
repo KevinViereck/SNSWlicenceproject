@@ -17,7 +17,7 @@ data class User (
         )
 
 @Serializable
-data class UserDTO(
+data class UserDTOLogin(
     val email: String,
     val password: String,
 )
