@@ -9,9 +9,15 @@ data class User (
     val firstName: String,
     val lastName: String,
     val email: String,
-    val mobile: Int,
+    val mobile: String,
     val password:String,
-    val roles: Array<String> = arrayOf(""),
+    val roles: List<String> = listOf(),
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<User> = newId()
         )
+
+@Serializable
+data class UserDTO(
+    val email: String,
+    val password: String,
+)
