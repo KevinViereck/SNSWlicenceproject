@@ -11,6 +11,7 @@ data class User (
     val email: String,
     val mobile: Int,
     val password:String,
+    val roles: Array<String> = arrayOf(""),
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<User> = newId()
         )
