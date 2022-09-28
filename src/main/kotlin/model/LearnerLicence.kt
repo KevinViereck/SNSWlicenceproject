@@ -12,7 +12,7 @@ data class LearnerLicence (
     val _id: Id<LearnerLicence> = newId(),
     val dateIssued: Long = System.currentTimeMillis(),
     val practiceLogEntries: List<PracticeLogEntry>,
-    val userId: String
+    val userId: Id<User>
 
     )
 
