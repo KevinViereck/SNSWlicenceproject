@@ -9,6 +9,7 @@ data class User (
     val firstName: String,
     val lastName: String,
     val email: String,
+    val dateOfBirth: String,
     val mobile: String,
     val password:String,
     val roles: List<String> = listOf(),
