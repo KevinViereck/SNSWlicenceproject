@@ -38,7 +38,7 @@ fun Route.userRoute (db: MongoDatabase) {
             val data= call.receive<UserDTOLogin>()
 
             val filter = "{email:/^${data.email}\$/i}"
-            val newUser = user.findOneById(filter)
+            val newUser = user.findOne(filter)
 
             if(newUser == null){
                 return@post call.respond(HttpStatusCode.BadRequest)
@@ -53,7 +53,7 @@ fun Route.userRoute (db: MongoDatabase) {
             val token = JWT.create()
                 .withAudience("http://localhost:8080")
                 .withIssuer("http://localhost:8080")
-                .withClaim("id",newUser?._id.toString())
+                .withClaim("email",newUser?.email)
                 .withClaim("roles",newUser?.roles)
                 .withExpiresAt(expiry)
                 .sign(Algorithm.HMAC256("secret"))
