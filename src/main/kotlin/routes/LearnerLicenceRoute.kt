@@ -3,10 +3,13 @@ package routes
 import com.mongodb.client.MongoDatabase
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import model.LearnerLicence
+import model.User
 import org.litote.kmongo.*
 
 
@@ -20,12 +23,13 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
             call.respond(data)
         }
 
-        get("/{id}"){
-            val id = call.parameters["id"].toString()
-            val filter = "{_id:ObjectId('$id')}"
-            val entity = logbook.findOne(filter)
-            if (entity != null) {
-                call.respond(entity)
+        get("/email"){
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal?.payload?.getClaim("userId").toString().replace("\"", "")
+            val filter = "{userId:ObjectId('$userId')}"
+            val username = logbook.findOne(filter)
+            if (username != null) {
+                call.respond(username)
             } else {
                 call.respond((HttpStatusCode.NotFound))
             }
@@ -36,6 +40,8 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
             logbook.insertOne(entity)
             call.respond(HttpStatusCode.Created, entity)
         }
+
+
         put{
             val entity = call.receive<LearnerLicence>()
             val result = logbook.updateOne(entity)
