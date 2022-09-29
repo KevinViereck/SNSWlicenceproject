@@ -14,10 +14,12 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
     val logbook = db.getCollection<LearnerLicence>("logbook")
 
     route("/logbook") {
+
         get{
             val data = logbook.find().toList()
             call.respond(data)
         }
+
         get("/{id}"){
             val id = call.parameters["id"].toString()
             val filter = "{_id:ObjectId('$id')}"
@@ -28,6 +30,7 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
                 call.respond((HttpStatusCode.NotFound))
             }
         }
+
         post{
             val entity = call.receive<LearnerLicence>()
             logbook.insertOne(entity)
