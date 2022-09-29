@@ -37,6 +37,10 @@ fun Application.start() {
         allowMethod(HttpMethod.Put)
         allowHeader(HttpHeaders.AccessControlAllowOrigin)
         allowHeader(HttpHeaders.ContentType)
+        allowMethod(HttpMethod.Get)
+        allowHeader(HttpHeaders.AccessControlAllowHeaders)
+        allowMethod(HttpMethod.Options)
+        allowHeaders{true}
     }
     install(ContentNegotiation) {
         json()

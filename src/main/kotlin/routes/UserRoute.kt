@@ -14,6 +14,7 @@ import model.User
 
 import model.UserDTOLogin
 import org.litote.kmongo.*
+import org.litote.kmongo.util.idValue
 import org.mindrot.jbcrypt.BCrypt
 import java.util.Date
 
@@ -55,6 +56,7 @@ fun Route.userRoute (db: MongoDatabase) {
                 .withIssuer("http://localhost:8080")
                 .withClaim("email",newUser?.email)
                 .withClaim("roles",newUser?.roles)
+                .withClaim("userId",newUser?._id.toString())
                 .withExpiresAt(expiry)
                 .sign(Algorithm.HMAC256("secret"))
 
