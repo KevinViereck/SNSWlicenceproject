@@ -12,6 +12,7 @@ data class LearnerLicence (
     val _id: Id<LearnerLicence> = newId(),
     val dateIssued: Long = System.currentTimeMillis(),
     val practiceLogEntries: List<PracticeLogEntry>,
+    @Serializable(with = ObjectIdAsStringSerializer::class)
     val userId: Id<User>
 
     )

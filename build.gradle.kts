@@ -34,6 +34,9 @@ dependencies {
     //https://ktor.io/docs/jwt.html#flow
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jvm:2.0.3")
+    implementation("io.ktor:ktor-server-core-jvm:2.0.3")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:2.0.3")
     testImplementation(kotlin("test"))
 }
 
