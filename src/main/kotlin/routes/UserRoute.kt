@@ -19,6 +19,19 @@ import org.mindrot.jbcrypt.BCrypt
 import java.util.Date
 
 
+fun getJWT(user:User):String{
+
+    val expiry = Date(System.currentTimeMillis() +86400000)
+    return JWT.create()
+        .withAudience("http://localhost:8080")
+        .withIssuer("http://localhost:8080")
+        .withClaim("email",user.email)
+        .withClaim("roles",user.roles)
+        .withClaim("userId",user._id.toString())
+        .withExpiresAt(expiry)
+        .sign(Algorithm.HMAC256("secret"))
+}
+
 fun Route.userRoute (db: MongoDatabase) {
     val user = db.getCollection<User>("user")
 
@@ -29,7 +42,8 @@ fun Route.userRoute (db: MongoDatabase) {
             val hashed= BCrypt.hashpw(data.password,BCrypt.gensalt())
             val newUser = User(data.firstName,data.lastName, data.email,data.dateOfBirth,data.mobile, password=hashed, roles = listOf("customer"))
             user.insertOne(newUser)
-            call.respond(HttpStatusCode.Created)
+            val token = getJWT(newUser)
+            call.respond(HttpStatusCode.Created, token)
         }
 
 
@@ -50,16 +64,8 @@ fun Route.userRoute (db: MongoDatabase) {
                 return@post call.respond(HttpStatusCode.BadRequest)
             }
             val userid = principal?.payload?.getClaim("id").toString()
-            val expiry = Date(System.currentTimeMillis() +86400000)
-            val token = JWT.create()
-                .withAudience("http://localhost:8080")
-                .withIssuer("http://localhost:8080")
-                .withClaim("email",newUser?.email)
-                .withClaim("roles",newUser?.roles)
-                .withClaim("userId",newUser?._id.toString())
-                .withExpiresAt(expiry)
-                .sign(Algorithm.HMAC256("secret"))
 
+            val token = getJWT(newUser)
             return@post call.respond(token)
 
         }
