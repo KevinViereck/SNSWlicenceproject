@@ -9,7 +9,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import model.LearnerLicence
-import model.User
 import org.litote.kmongo.*
 
 
@@ -19,6 +18,12 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
     route("/logbook") {
 
         get{
+
+            // only can be displayed to CSR the entire list of customers
+            val principal = call.principal<JWTPrincipal>()
+            val userRoles = principal?.payload?.getClaim("roles").toString()
+                .replace("[", "").replace("]", "").replace("\"", "")
+                .split(",")
             val data = logbook.find().toList()
             call.respond(data)
         }
@@ -27,6 +32,8 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.payload?.getClaim("userId").toString().replace("\"", "")
             val filter = "{userId:ObjectId('$userId')}"
+
+            //should be able to display only the filtered person details
             val username = logbook.findOne(filter)
             if (username != null) {
                 call.respond(username)
@@ -35,14 +42,10 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
             }
         }
 
-        post{
-            val entity = call.receive<LearnerLicence>()
-            logbook.insertOne(entity)
-            call.respond(HttpStatusCode.Created, entity)
-        }
-
-
         put{
+
+            // to do update when the remaining hours are equal to or more than 120 hours
+            // to issue P plate
             val entity = call.receive<LearnerLicence>()
             val result = logbook.updateOne(entity)
             if (result.modifiedCount.toInt() == 1){
@@ -51,16 +54,7 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
                 call.respond(HttpStatusCode.NotFound)
             }
         }
-        delete("/{id}"){
-            val id = call.parameters["id"].toString()
-            val filter = "{_id:ObjectId('$id')}"
-            val result = logbook.deleteOne(filter)
-            if (result.deletedCount.toInt() == 1) {
-                call.respond(HttpStatusCode.NoContent)
-            } else {
-                call.respond(HttpStatusCode.NotFound)
-            }
-        }
+
     }
 }
 
