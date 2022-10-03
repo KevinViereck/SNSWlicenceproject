@@ -21,4 +21,7 @@ data class User (
 data class UserDTOLogin(
     val email: String,
     val password: String,
+    val roles:List<String>,
+    val token:String,
+    val authenticated:Boolean,
 )

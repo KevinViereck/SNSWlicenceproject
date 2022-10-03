@@ -9,7 +9,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import model.LearnerLicence
-import model.User
 import org.litote.kmongo.*
 
 
@@ -35,14 +34,10 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
             }
         }
 
-        post{
-            val entity = call.receive<LearnerLicence>()
-            logbook.insertOne(entity)
-            call.respond(HttpStatusCode.Created, entity)
-        }
-
-
         put{
+
+            // to do update when the remaining hours are equal to or more than 120 hours
+            // to issue P plate
             val entity = call.receive<LearnerLicence>()
             val result = logbook.updateOne(entity)
             if (result.modifiedCount.toInt() == 1){
@@ -51,16 +46,7 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
                 call.respond(HttpStatusCode.NotFound)
             }
         }
-        delete("/{id}"){
-            val id = call.parameters["id"].toString()
-            val filter = "{_id:ObjectId('$id')}"
-            val result = logbook.deleteOne(filter)
-            if (result.deletedCount.toInt() == 1) {
-                call.respond(HttpStatusCode.NoContent)
-            } else {
-                call.respond(HttpStatusCode.NotFound)
-            }
-        }
+
     }
 }
 

@@ -14,7 +14,6 @@ import model.User
 
 import model.UserDTOLogin
 import org.litote.kmongo.*
-import org.litote.kmongo.util.idValue
 import org.mindrot.jbcrypt.BCrypt
 import java.util.Date
 
@@ -40,7 +39,14 @@ fun Route.userRoute (db: MongoDatabase) {
         post("/register"){
             val data = call.receive<User>()
             val hashed= BCrypt.hashpw(data.password,BCrypt.gensalt())
-            val newUser = User(data.firstName,data.lastName, data.email,data.dateOfBirth,data.mobile, password=hashed, roles = listOf("customer"))
+            val newUser = User(
+                data.firstName,
+                data.lastName,
+                data.email,
+                data.dateOfBirth,
+                data.mobile,
+                password=hashed,
+                roles = listOf("customer"))
             user.insertOne(newUser)
             val token = getJWT(newUser)
             call.respond(HttpStatusCode.Created, token)
