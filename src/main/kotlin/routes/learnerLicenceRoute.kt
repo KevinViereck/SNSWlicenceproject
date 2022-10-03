@@ -18,6 +18,12 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
     route("/logbook") {
 
         get{
+
+            // only can be displayed to CSR the entire list of customers
+            val principal = call.principal<JWTPrincipal>()
+            val userRoles = principal?.payload?.getClaim("roles").toString()
+                .replace("[", "").replace("]", "").replace("\"", "")
+                .split(",")
             val data = logbook.find().toList()
             call.respond(data)
         }
@@ -26,6 +32,8 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.payload?.getClaim("userId").toString().replace("\"", "")
             val filter = "{userId:ObjectId('$userId')}"
+
+            //should be able to display only the filtered person details
             val username = logbook.findOne(filter)
             if (username != null) {
                 call.respond(username)

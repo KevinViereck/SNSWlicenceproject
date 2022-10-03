@@ -11,7 +11,7 @@ import java.util.*
 data class LearnerLicence (
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<LearnerLicence> = newId(),
-    val dateRegistered:String,
+    val dateRegistered:Long = System.currentTimeMillis(),
     val remainingHours: Int,
     val email:String,
     @Serializable(with = ObjectIdAsStringSerializer::class)
