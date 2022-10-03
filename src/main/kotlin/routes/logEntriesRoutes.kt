@@ -9,7 +9,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import model.LogEntries
 import org.litote.kmongo.*
-import model.LogEntriesDTO
 import model.toDTO
 
 
@@ -38,7 +37,7 @@ fun Route.logEntries (db: MongoDatabase) {
                 endTime = logEntries.endTime,
                 day= logEntries.day,
                 night = logEntries.night,
-                instructorLed = logEntries.instructorLed,);
+                instructorLed = logEntries.instructorLed, licenceId = logEntries.licenceId);
 
                 loghours.insertOne(logentry)
 

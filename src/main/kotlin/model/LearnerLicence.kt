@@ -7,6 +7,7 @@ import org.litote.kmongo.newId
 import java.time.LocalDate
 import java.util.*
 
+//this class is to store the licence details of every customer and only viewable by CSR.
 @Serializable
 data class LearnerLicence (
     @Serializable(with = ObjectIdAsStringSerializer::class)

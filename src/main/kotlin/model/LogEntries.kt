@@ -17,7 +17,7 @@ data class LogEntries(
     val night: String,
     val instructorLed: Boolean,
     @Serializable(with = ObjectIdAsStringSerializer::class)
-    val _id: Id<LogEntries>
+    val _id: Id<LogEntries> = newId()
 )
 
 @Serializable
