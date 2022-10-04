@@ -5,8 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.mongodb.client.MongoDatabase
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -54,9 +52,7 @@ fun Route.userRoute (db: MongoDatabase) {
 
 
         post("/login"){
-
-            val principal = call.principal<JWTPrincipal>()
-            val data= call.receive<UserDTOLogin>()
+            val data= call.receive<User>()
 
             val filter = "{email:/^${data.email}\$/i}"
             val newUser = user.findOne(filter)
@@ -64,15 +60,29 @@ fun Route.userRoute (db: MongoDatabase) {
             if(newUser == null){
                 return@post call.respond(HttpStatusCode.BadRequest)
             }
-
             val valid = BCrypt.checkpw(data.password,newUser.password)
-            if(!valid){
+            if(!valid) {
                 return@post call.respond(HttpStatusCode.BadRequest)
             }
-            val userid = principal?.payload?.getClaim("id").toString()
+            val expiry = Date(System.currentTimeMillis() + 86400000)
+            val token = JWT.create()
+                .withAudience("http://localhost:8080")
+                .withIssuer("http://localhost:8080")
+                .withClaim("email",newUser?.email)
+                .withClaim("roles",newUser?.roles)
+                .withExpiresAt(expiry)
+                .sign(Algorithm.HMAC256("secret"))
+            val loginDTO= UserDTOLogin(
+                email = newUser.email,
+                roles = newUser.roles,
+                token= token,
+                authenticated = true,
+            )
 
-            val token = getJWT(newUser)
-            return@post call.respond(token)
+            return@post call.respond(loginDTO)
+//
+//            val token = getJWT(newUser)
+//            return@post call.respond(token)
 
         }
 
