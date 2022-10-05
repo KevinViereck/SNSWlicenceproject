@@ -8,6 +8,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import model.LearnerLicence
 import model.User
 
 import model.UserDTOLogin
@@ -32,6 +33,7 @@ fun getJWT(user:User):String{
 
 fun Route.userRoute (db: MongoDatabase) {
     val user = db.getCollection<User>("user")
+    val licences = db.getCollection<LearnerLicence>("logbook")
 
     route("/user") {
 
@@ -47,6 +49,18 @@ fun Route.userRoute (db: MongoDatabase) {
                 password=hashed,
                 roles = listOf("customer"))
             user.insertOne(newUser)
+            val licence = LearnerLicence(
+                email=newUser.email,
+                userId = newUser._id,
+            )
+
+            licences.insertOne(licence)
+
+//            added general licence in UserRouts.kt
+//            line 51-56 to give every user individual licence numbers in
+//            the backend of things
+
+
             val token = getJWT(newUser)
             call.respond(HttpStatusCode.Created, token)
         }

@@ -13,7 +13,7 @@ data class LearnerLicence (
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<LearnerLicence> = newId(),
     val dateRegistered:Long = System.currentTimeMillis(),
-    val remainingHours: Int,
+    val remainingHours: Int = 120,
     val email:String,
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val userId: Id<User>
