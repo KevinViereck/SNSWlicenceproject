@@ -18,7 +18,7 @@ import org.mindrot.jbcrypt.BCrypt
 import java.util.Date
 
 
-fun getJWT(user:User):String{
+fun getJWT(user:User, licence: LearnerLicence):String{
 
     val expiry = Date(System.currentTimeMillis() +86400000)
     return JWT.create()
@@ -27,6 +27,7 @@ fun getJWT(user:User):String{
         .withClaim("email",user.email)
         .withClaim("roles",user.roles)
         .withClaim("userId",user._id.toString())
+        .withClaim("licenceId",licence._id.toString())
         .withExpiresAt(expiry)
         .sign(Algorithm.HMAC256("secret"))
 }
@@ -61,7 +62,7 @@ fun Route.userRoute (db: MongoDatabase) {
 //            the backend of things
 
 
-            val token = getJWT(newUser)
+            val token = getJWT(newUser, licence)
             call.respond(HttpStatusCode.Created, token)
         }
 
@@ -79,15 +80,22 @@ fun Route.userRoute (db: MongoDatabase) {
             if(!valid) {
                 return@post call.respond(HttpStatusCode.BadRequest)
             }
+            val licenceFilter = "{userId:ObjectId('${newUser._id}')}"
+            var licence = licences.findOne (licenceFilter)
+
+            if (licence == null){
+                 licence = LearnerLicence(
+                    email=newUser.email,
+                    userId = newUser._id,
+                )
+
+                licences.insertOne(licence)
+
+
+            }
+
             val expiry = Date(System.currentTimeMillis() + 86400000)
-            val token = JWT.create()
-                .withAudience("http://localhost:8080")
-                .withIssuer("http://localhost:8080")
-                .withClaim("email",newUser?.email)
-                .withClaim("roles",newUser?.roles)
-                .withClaim( "userId", newUser?._id.toString() )
-                .withExpiresAt(expiry)
-                .sign(Algorithm.HMAC256("secret"))
+            val token = getJWT(newUser, licence)
             val loginDTO= UserDTOLogin(
                 email = newUser.email,
                 roles = newUser.roles,

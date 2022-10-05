@@ -13,8 +13,7 @@ data class LogEntries(
     val licenceId: Id<LearnerLicence>,
     val startTime: Long = System.currentTimeMillis(),
     val endTime: Long = System.currentTimeMillis(),
-    val day: String,
-    val night: String,
+    val isNight: Boolean,
     val instructorLed: Boolean,
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<LogEntries> = newId()
@@ -26,8 +25,7 @@ data class LogEntriesDTO(
     val _id: Id<LogEntries> = newId(),
     val startTime: Long = System.currentTimeMillis(),
     val endTime: Long = System.currentTimeMillis(),
-    val day: String,
-    val night: String,
+    val isNight: Boolean,
     val instructorLed: Boolean,
 )
 
@@ -36,8 +34,7 @@ fun LogEntries.toDTO(): LogEntriesDTO{
         _id = this._id,
         startTime = this.startTime,
         endTime = this.endTime,
-        day = this.day,
-        night = this.night,
+       isNight = this.isNight,
         instructorLed = this.instructorLed,
     )
 }

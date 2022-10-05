@@ -7,9 +7,11 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import model.LearnerLicence
 import model.LogEntries
 import org.litote.kmongo.*
 import model.toDTO
+import org.litote.kmongo.id.IdGenerator
 
 
 fun Route.logEntries (db: MongoDatabase) {
@@ -28,21 +30,63 @@ fun Route.logEntries (db: MongoDatabase) {
 //            call.respond(logEntries)
         }
 
+        get {
+            val principal = call.principal<JWTPrincipal>()
+            val id = principal?.payload?.getClaim("licenceId").toString().replace("\"", "")
+            val filter = "{licenceId:ObjectId('$id')}"
+            val matchingLogHours = loghours.find(filter).toList()
+                    call.respond(matchingLogHours)
+
+
+        }
+
         post{
             val logEntries = call.receive<LogEntries>()
             val principal = call.principal<JWTPrincipal>()
-            val id = principal?.payload?.getClaim("_id").toString().replace("\"", "")
+            val id = principal?.payload?.getClaim("licenceId").toString().replace("\"", "")
 
-            val logentry = LogEntries(startTime = logEntries.startTime,
+            val logentry = LogEntries(
+                licenceId = IdGenerator.defaultGenerator.create(id) as Id<LearnerLicence>,
+                startTime = logEntries.startTime,
                 endTime = logEntries.endTime,
-                day= logEntries.day,
-                night = logEntries.night,
-                instructorLed = logEntries.instructorLed, licenceId = logEntries.licenceId);
+                isNight =  logEntries.isNight,
+                instructorLed = logEntries.instructorLed,
+
+
+            );
+
+
+
 
                 loghours.insertOne(logentry)
 
                 call.respond(HttpStatusCode.Created,logentry);
         }
+
+        delete ("/{id}"){
+            val principal = call.principal<JWTPrincipal>()
+            val licenceId = principal?.payload?.getClaim("licenceId").toString().replace("\"", "")
+            val id = call.parameters["id"].toString()
+            val filter = "{_id:ObjectId('$id')}"
+            val logEntry = loghours.findOne (filter)
+
+            if (logEntry==null){
+                return@delete call.respond(HttpStatusCode.NotFound)
+
+            }
+            if (logEntry.licenceId.toString()!=licenceId)
+                return@delete call.respond(HttpStatusCode.Unauthorized)
+
+            loghours.deleteOne(filter)
+            return@delete call.respond(HttpStatusCode.OK)
+
+
+        }
+
+
+
+
+
 
     }
 }
