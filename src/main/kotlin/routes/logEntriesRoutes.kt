@@ -25,7 +25,8 @@ fun Route.logEntries(db: MongoDatabase) {
 
             val principal = call.principal<JWTPrincipal>()
             val id = principal?.payload?.getClaim("licenceId").toString().replace("\"", "")
-            val filter = "{objectId:/^${id}$/i}"
+//            val filter = "{objectId:/^${id}$/i}"
+            val filter = "{licenceId:/^${id}$/i}"
             val logEntries = loghours.find(filter).toList()
             call.respond(logEntries.map { it.toDTO() })
 //            val logEntries = loghours.find().toList()

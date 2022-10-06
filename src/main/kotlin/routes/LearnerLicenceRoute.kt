@@ -12,12 +12,12 @@ import model.LearnerLicence
 import org.litote.kmongo.*
 
 
-fun Route.learnerLicenceRoute (db: MongoDatabase) {
+fun Route.learnerLicenceRoute(db: MongoDatabase) {
     val logbook = db.getCollection<LearnerLicence>("logbook")
 
     route("/logbook") {
 
-        get{
+        get {
 
             // only can be displayed to CSR the entire list of customers
             val principal = call.principal<JWTPrincipal>()
@@ -28,7 +28,7 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
             call.respond(data)
         }
 
-        get("/email"){
+        get("/email") {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.payload?.getClaim("userId").toString().replace("\"", "")
             val filter = "{userId:ObjectId('$userId')}"
@@ -42,13 +42,13 @@ fun Route.learnerLicenceRoute (db: MongoDatabase) {
             }
         }
 
-        put{
+        put {
 
             // to do update when the remaining hours are equal to or more than 120 hours
             // to issue P plate
             val entity = call.receive<LearnerLicence>()
             val result = logbook.updateOne(entity)
-            if (result.modifiedCount.toInt() == 1){
+            if (result.modifiedCount.toInt() == 1) {
                 call.respond(HttpStatusCode.OK, entity)
             } else {
                 call.respond(HttpStatusCode.NotFound)
