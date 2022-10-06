@@ -18,6 +18,7 @@ import io.ktor.util.*
 import kotlinx.serialization.*
 import org.litote.kmongo.*
 import routes.learnerLicenceRoute
+import routes.logEntries
 import routes.userRoute
 
 
@@ -66,9 +67,9 @@ fun Application.start() {
 
 
         userRoute(database)
-
         authenticate {
             learnerLicenceRoute(database)
+            logEntries(database)
         }
     }
     // We are changing comments again again

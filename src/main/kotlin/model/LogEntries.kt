@@ -29,12 +29,14 @@ data class LogEntriesDTO(
     val instructorLed: Boolean,
 )
 
-fun LogEntries.toDTO(): LogEntriesDTO{
+fun LogEntries.toDTO(): LogEntriesDTO {
     return LogEntriesDTO(
         _id = this._id,
         startTime = this.startTime,
         endTime = this.endTime,
-       isNight = this.isNight,
+        isNight = this.isNight,
         instructorLed = this.instructorLed,
-    )
+
+        )
 }
+
