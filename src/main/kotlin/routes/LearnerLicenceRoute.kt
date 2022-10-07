@@ -21,11 +21,10 @@ fun Route.learnerLicenceRoute(db: MongoDatabase) {
 
             // only can be displayed to CSR the entire list of customers
             val principal = call.principal<JWTPrincipal>()
-            val userRoles = principal?.payload?.getClaim("roles").toString()
-                .replace("[", "").replace("]", "").replace("\"", "")
-                .split(",")
-            val data = logbook.find().toList()
-            call.respond(data)
+            val userId = principal?.payload?.getClaim("userId").toString().replace("\"", "")
+            val filter = "{userId:ObjectId('$userId')}"
+            val data = logbook.findOne(filter)
+            call.respond(data!!)
         }
 
         get("/email") {

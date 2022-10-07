@@ -27,8 +27,8 @@ fun Route.logEntries(db: MongoDatabase) {
             val id = principal?.payload?.getClaim("licenceId").toString().replace("\"", "")
 //            val filter = "{objectId:/^${id}$/i}"
             val filter = "{licenceId:/^${id}$/i}"
-            val logEntries = loghours.find(filter).toList()
-            call.respond(logEntries.map { it.toDTO() })
+            val logEntries = loghours.findOne(filter)
+            call.respond(logEntries!!)
 //            val logEntries = loghours.find().toList()
 //            call.respond(logEntries)
         }
