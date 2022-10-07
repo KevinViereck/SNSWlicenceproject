@@ -11,8 +11,8 @@ data class LogEntries(
     // stores the data of customers for their log hours and log history
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val licenceId: Id<LearnerLicence>,
-    val startTime: Long = System.currentTimeMillis(),
-    val endTime: Long = System.currentTimeMillis(),
+    val startTime: Long,
+    val endTime: Long,
     val isNight: Boolean,
     val instructorLed: Boolean,
     @Serializable(with = ObjectIdAsStringSerializer::class)
@@ -23,8 +23,8 @@ data class LogEntries(
 data class LogEntriesDTO(
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<LogEntries> = newId(),
-    val startTime: Long = System.currentTimeMillis(),
-    val endTime: Long = System.currentTimeMillis(),
+    val startTime: Long,
+    val endTime: Long,
     val isNight: Boolean,
     val instructorLed: Boolean,
 )

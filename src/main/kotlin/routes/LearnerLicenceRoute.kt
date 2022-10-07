@@ -13,9 +13,9 @@ import org.litote.kmongo.*
 
 
 fun Route.learnerLicenceRoute(db: MongoDatabase) {
-    val logbook = db.getCollection<LearnerLicence>("logbook")
+    val licenceCollection = db.getCollection<LearnerLicence>("licences")
 
-    route("/logbook") {
+    route("/licences") {
 
         get {
 
@@ -23,8 +23,14 @@ fun Route.learnerLicenceRoute(db: MongoDatabase) {
             val principal = call.principal<JWTPrincipal>()
             val userId = principal?.payload?.getClaim("userId").toString().replace("\"", "")
             val filter = "{userId:ObjectId('$userId')}"
-            val data = logbook.findOne(filter)
-            call.respond(data!!)
+            val data = licenceCollection.findOne(filter)
+            if(data != null){
+                call.respond(data)
+            }
+            else{
+                call.respond(HttpStatusCode.BadRequest)
+            }
+
         }
 
         get("/email") {
@@ -33,7 +39,7 @@ fun Route.learnerLicenceRoute(db: MongoDatabase) {
             val filter = "{userId:ObjectId('$userId')}"
 
             //should be able to display only the filtered person details
-            val username = logbook.findOne(filter)
+            val username = licenceCollection.findOne(filter)
             if (username != null) {
                 call.respond(username)
             } else {
@@ -46,7 +52,7 @@ fun Route.learnerLicenceRoute(db: MongoDatabase) {
             // to do update when the remaining hours are equal to or more than 120 hours
             // to issue P plate
             val entity = call.receive<LearnerLicence>()
-            val result = logbook.updateOne(entity)
+            val result = licenceCollection.updateOne(entity)
             if (result.modifiedCount.toInt() == 1) {
                 call.respond(HttpStatusCode.OK, entity)
             } else {
