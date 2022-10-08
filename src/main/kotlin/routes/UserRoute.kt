@@ -34,7 +34,7 @@ fun getJWT(user:User, licence: LearnerLicence):String{
 
 fun Route.userRoute (db: MongoDatabase) {
     val user = db.getCollection<User>("user")
-    val licences = db.getCollection<LearnerLicence>("logbook")
+    val licences = db.getCollection<LearnerLicence>("licences")
 
     route("/user") {
 
